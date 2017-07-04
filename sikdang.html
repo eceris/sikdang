@@ -3,35 +3,51 @@
 		<script type="text/javascript">
 			var config = { 
 				'한식' : {
-					'불고기' : {
+					'불고기' : [
 						'원조쌈밥집', 
 						'싸리방',
 						'남원추어탕'
-					},
-					'찜닭' : {
+					],
+					'찜닭' : [
 						'고수찜닭',
 						'내찜닭'
-					},
-					'해장국' : {
+					],
+					'해장국' : [
 						'무봉리순대국',
 						'이화수육개장'
-					},
-					'백반' : {
+					],
+					'백반' : [
 						'엄마의 밥상',
 						'시골밥상'
-					}
+					]
 				},
-				'분식' : {
+				'분식' : [
 					'김밥나라',
 					'배꼽빵빵'
-				}
+				]
 			};
+			var nodeTemplate = null;
 			function init() {
-				
+				nodeTemplate = document.getElementById('nodeTemplate');
+				var nodesHTML = '';
+				for(var node in config) {
+					console.log('node: ' + node);
+					var templateStr = nodeTemplate.innerHTML;
+					templateStr = templateStr.replace('{{node}}', node);
+					nodesHTML += templateStr;
+				}
+				document.getElementById('nodes').innerHTML = nodesHTML;
 			}
 		</script>	
 	</head>
-	<body>
+	<body onload="init()">
+		<div id="nodeTemplate" style="display:none">
+			<div style="border:1px solid blue; float: left; margin: 10px; text-align: center;">
+				<span style="width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt">{{node}}</span>
+			</div>
+		</div>
+		<div id="nodes">
 		
+		</div>
 	</body>
 </html>
