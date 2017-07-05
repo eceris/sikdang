@@ -26,6 +26,7 @@
 					'배꼽빵빵'
 				]
 			};
+			var currentNode = "";
 			var nodeTemplate = null;
 			function init() {
 				nodeTemplate = document.getElementById('nodeTemplate');
@@ -38,12 +39,25 @@
 				}
 				document.getElementById('nodes').innerHTML = nodesHTML;
 			}
-		</script>	
+			function select(e) {
+				var nodeSpan = e.getElementsByTagName('span')[0];
+				console.log(nodeSpan);
+				currentNode = nodeSpan.innerHTML;
+			}
+			function search() {
+				
+				return '한식';
+			}
+		</script>
+		<style>
+			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
+			.node span { width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt }
+		</style>
 	</head>
 	<body onload="init()">
 		<div id="nodeTemplate" style="display:none">
-			<div style="border:1px solid blue; float: left; margin: 10px; text-align: center;">
-				<span style="width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt">{{node}}</span>
+			<div class="node" onclick="select(this)">
+				<span>{{node}}</span>
 			</div>
 		</div>
 		<div id="nodes">
