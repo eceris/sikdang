@@ -41,12 +41,35 @@
 			}
 			function select(e) {
 				var nodeSpan = e.getElementsByTagName('span')[0];
-				console.log(nodeSpan);
 				currentNode = nodeSpan.innerHTML;
-			}
-			function search() {
 				
-				return '한식';
+				var childs = searchChild(config);
+				alert(childs);
+			}
+			function searchChild(parent) {
+				console.log('parent: ' + parent);
+				
+				if(Array.isArray(parent) || Object.keys(parent).length == 0) {
+					return -1;
+				}
+				
+				for(var key in parent) {
+					if(currentNode == key) {
+						var ret = parent[key];
+						if(Array.isArray(ret)) {
+							return ret;
+						} else {
+							return Object.keys(ret);
+						}
+					} else {
+						var ret = searchChild(parent[key]);
+						if(ret != -1) {
+							return ret;
+						}
+					}
+				}
+				
+				return -1;
 			}
 		</script>
 		<style>
