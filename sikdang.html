@@ -39,6 +39,40 @@
 				}
 				document.getElementById('nodes').innerHTML = nodesHTML;
 			}
+			function randomSelect(e) {
+				var allSikdangNodes = makeAllSikdangList();
+				var randomValue = Math.floor(Math.random()*allSikdangNodes.length +1);
+				alert(allSikdangNodes[randomValue]);
+			}
+			
+			
+			function makeAllSikdangList() {
+				
+				var allSikdangNodes = new Array();
+				searchSikdangNodes(config);
+				
+				
+				function searchSikdangNodes(node) {
+					if(typeof node == 'string') {
+					 allSikdangNodes.push(node);
+					} else if(Array.isArray(node)) {
+						for(var item in node) {
+							searchSikdangNodes(node[item]);
+						}
+					} else {
+						for(var item in node) {
+							searchSikdangNodes(node[item]);
+						}
+					
+					}
+					return;
+				}
+				
+				return allSikdangNodes;
+			}
+			
+			
+			
 			function select(e) {
 				var nodeSpan = e.getElementsByTagName('span')[0];
 				currentNode = nodeSpan.innerHTML;
@@ -86,5 +120,6 @@
 		<div id="nodes">
 		
 		</div>
+		<div id="randomBtn" onclick="randomSelect(this)">Random!</div>
 	</body>
 </html>
