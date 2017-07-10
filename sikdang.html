@@ -29,10 +29,12 @@
 			var currentNode = "";
 			var nodeTemplate = null;
 			var randomValue = [];
+			var children = [];
 			
 			function draw(childs) {
 				if (childs == -1) {
 					document.getElementById('randomSelect').style.display = "none";
+					document.getElementById('oneClickSelect').style.display = "none";
 				}
 				nodeTemplate = document.getElementById('nodeTemplate');
 				var nodesHTML = '';
@@ -73,7 +75,7 @@
 				var childs = searchChild(config);
 				draw(childs);
 			}
-			
+
 
 			function searchChild(parent) {
 				console.log('parent: ' + parent);
@@ -100,6 +102,28 @@
 				
 				return -1;
 			}
+			
+			function oneClickSelect(e) {
+				
+				getAllChildrend(config);
+				alert(children[Math.floor(Math.random()*children.length)]);
+			}
+
+			function getAllChildrend(parent) {
+				
+				if(Array.isArray(parent) || Object.keys(parent).length == 0) {
+					children = children.concat(parent);
+					return -1;
+				}
+				
+				for(var key in parent) {
+					var ret = getAllChildrend(parent[key]);
+					if(ret != -1) {
+						return ret;
+					}
+				}
+				return -1;
+			}
 
 			
 		</script>
@@ -121,6 +145,11 @@
 		<div id="randomSelect">
 			<div class="node" onclick="randomSelect(this)">
 					<span>random</span>
+			</div>
+		</div>
+		<div id="oneClickSelect">
+			<div class="node" onclick="oneClickSelect(this)">
+					<span>oneClickSelect</span>
 			</div>
 		</div>
 
