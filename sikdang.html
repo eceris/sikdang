@@ -28,24 +28,53 @@
 			};
 			var currentNode = "";
 			var nodeTemplate = null;
-			function init() {
+			var randomValue = [];
+			
+			function draw(childs) {
+				if (childs == -1) {
+					document.getElementById('randomSelect').style.display = "none";
+				}
 				nodeTemplate = document.getElementById('nodeTemplate');
 				var nodesHTML = '';
-				for(var node in config) {
+				if (!childs || 0) {
+					childs = config;
+				}
+				for(var node in childs) {
 					console.log('node: ' + node);
 					var templateStr = nodeTemplate.innerHTML;
-					templateStr = templateStr.replace('{{node}}', node);
+					if (Array.isArray(childs)) {
+						templateStr = templateStr.replace('{{node}}', childs[node]);
+					} else {
+						templateStr = templateStr.replace('{{node}}', node);
+					}
 					nodesHTML += templateStr;
 				}
 				document.getElementById('nodes').innerHTML = nodesHTML;
 			}
+
 			function select(e) {
 				var nodeSpan = e.getElementsByTagName('span')[0];
-				currentNode = nodeSpan.innerHTML;
-				
+				currentNode = nodeSpan.innerHTML;	
 				var childs = searchChild(config);
-				alert(childs);
+				draw(childs);
 			}
+
+			function randomSelect(e) {
+				var item = document.getElementById('nodes').getElementsByClassName('item');
+				for(var i in item) {
+					if (item.hasOwnProperty(i)) {
+						var value = item[i].getElementsByTagName('span')[0].textContent;
+						if (value || 0) {
+							randomValue.push(value);	
+						}	
+					}
+				}
+				currentNode = randomValue[Math.floor(Math.random()*randomValue.length)];
+				var childs = searchChild(config);
+				draw(childs);
+			}
+			
+
 			function searchChild(parent) {
 				console.log('parent: ' + parent);
 				
@@ -71,20 +100,29 @@
 				
 				return -1;
 			}
+
+			
 		</script>
 		<style>
 			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
 			.node span { width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt }
 		</style>
 	</head>
-	<body onload="init()">
+	<body onload="draw()">
 		<div id="nodeTemplate" style="display:none">
-			<div class="node" onclick="select(this)">
+
+			<div class="node item" onclick="select(this)">
 				<span>{{node}}</span>
 			</div>
+
 		</div>
 		<div id="nodes">
-		
 		</div>
+		<div id="randomSelect">
+			<div class="node" onclick="randomSelect(this)">
+					<span>random</span>
+			</div>
+		</div>
+
 	</body>
 </html>
