@@ -200,7 +200,7 @@
 			}
 
 			document.onkeydown = function(e){
-				if (event.keyCode == 8) { // backspace
+				if (e.keyCode == 8) { // backspace
 					var currentNodeIndex = previousNodes.length -1;
 					if (currentNodeIndex > 0) {
 						previousNodes.pop();
