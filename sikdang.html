@@ -32,23 +32,12 @@
 			var children = [];
 			
 			function draw(childs) {
-				if (childs == -1) {
-					document.getElementById('randomSelect').style.display = "none";
-					document.getElementById('oneClickSelect').style.display = "none";
-				}
-				nodeTemplate = document.getElementById('nodeTemplate');
 				var nodesHTML = '';
-				if (!childs || 0) {
-					childs = config;
-				}
 				for(var node in childs) {
 					console.log('node: ' + node);
 					var templateStr = nodeTemplate.innerHTML;
-					if (Array.isArray(childs)) {
-						templateStr = templateStr.replace('{{node}}', childs[node]);
-					} else {
-						templateStr = templateStr.replace('{{node}}', node);
-					}
+					templateStr = templateStr.replace('{{node}}', childs[node]);
+					
 					nodesHTML += templateStr;
 				}
 				document.getElementById('nodes').innerHTML = nodesHTML;
@@ -58,25 +47,17 @@
 				var nodeSpan = e.getElementsByTagName('span')[0];
 				currentNode = nodeSpan.innerHTML;	
 				var childs = searchChild(config);
-				draw(childs);
+				
+				if (childs != -1) {
+					draw(childs);
+				}
 			}
 
 			function randomSelect(e) {
-				var item = document.getElementById('nodes').getElementsByClassName('item');
-				for(var i in item) {
-					if (item.hasOwnProperty(i)) {
-						var value = item[i].getElementsByTagName('span')[0].textContent;
-						if (value || 0) {
-							randomValue.push(value);	
-						}	
-					}
-				}
-				currentNode = randomValue[Math.floor(Math.random()*randomValue.length)];
-				var childs = searchChild(config);
-				draw(childs);
+				var item = document.getElementById('nodes').getElementsByClassName('node');
+				var randomIndex = Math.floor(Math.random() * item.length);
+				selectRandom(randomIndex);
 			}
-
-
 			function searchChild(parent) {
 				console.log('parent: ' + parent);
 				
@@ -102,13 +83,44 @@
 				
 				return -1;
 			}
+			function selectRandom(destIndex) {
+				var nodes = document.getElementById("nodes").getElementsByTagName('div');
+				
+				var totalDelay = 3600;
+				var nextDelay = 50;
+				
+				var currIndex = -1;
+				
+				var animate = function(){
+					if(totalDelay < nextDelay && currIndex == destIndex) {
+						// TODO disable other node display and destination node click
+						return;
+					}
+					
+					if(currIndex != -1) {
+						nodes[currIndex].className = 'node';
+					}
+					currIndex = currIndex + 1;
+					if(currIndex == nodes.length) {
+						currIndex = 0;
+					}
+					nodes[currIndex].className = 'selectNode';
+					
+					nextDelay = nextDelay * 1.1;
+					totalDelay = totalDelay - nextDelay;
+					setTimeout(function() {
+						animate();
+					}, nextDelay);
+				};
+				
+				animate();
+			}
 			
 			function oneClickSelect(e) {
 				
 				getAllChildrend(config);
 				alert(children[Math.floor(Math.random()*children.length)]);
 			}
-
 			function getAllChildrend(parent) {
 				
 				if(Array.isArray(parent) || Object.keys(parent).length == 0) {
@@ -124,18 +136,22 @@
 				}
 				return -1;
 			}
-
-			
+			function init() {
+				nodeTemplate = document.getElementById('nodeTemplate');
+				draw(Object.keys(config));
+			}
 		</script>
 		<style>
 			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
 			.node span { width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt }
+			.selectNode { background-color: blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
+			.selectNode span { width:200px; height:200px; display:table-cell; vertical-align: middle; font-size:30pt; color:white; font-weight: bold; }
 		</style>
 	</head>
-	<body onload="draw()">
+	<body onload="init()">
 		<div id="nodeTemplate" style="display:none">
 
-			<div class="node item" onclick="select(this)">
+			<div class="node" onclick="select(this)">
 				<span>{{node}}</span>
 			</div>
 
