@@ -120,6 +120,7 @@
 			var nodeTemplate = null;
 			var randomValue = [];
 			var children = [];
+			var previousNodes = []; //이전 노드
 			function draw(childs) {
 				var nodesHTML = '';
 				for(var node in childs) {
@@ -133,9 +134,11 @@
 			function select(e) {
 				var nodeSpan = e.getElementsByTagName('span')[0];
 				currentNode = nodeSpan.innerHTML;	
+
 				var childs = searchChild(config);
 				if (childs != -1) {
 					draw(childs);
+					previousNodes.push(childs);
 				}
 			}
 			function randomSelect(e) {
@@ -211,7 +214,23 @@
 			function init() {
 				nodeTemplate = document.getElementById('nodeTemplate');
 				draw(Object.keys(config));
+				
+				var root = [];
+				for (var n in config) {
+					root.push(n);
+				}
+				previousNodes.push(root);
 			}
+
+			document.onkeydown = function(e){
+				if (e.keyCode == 8) { // backspace
+					var currentNodeIndex = previousNodes.length -1;
+					if (currentNodeIndex > 0) {
+						previousNodes.pop();
+						draw(previousNodes[previousNodes.length -1]);	
+					}	
+				}
+			};
 		</script>
 <style>
 			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
