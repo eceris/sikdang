@@ -173,9 +173,28 @@
 				var totalDelay = 3600;
 				var nextDelay = 50;
 				var currIndex = -1;
+				var selectDestinationNode = function() {
+					setTimeout(function() {
+							select(document.getElementById("nodes"));
+						}, 1000);
+				};
+				var disableOtherNodes = function(callback) {
+					setTimeout(function() {
+							var nodes = document.getElementById("nodes").getElementsByClassName('node');
+							for (var i in nodes) {
+								if (nodes.hasOwnProperty(i)) {
+									nodes[i].style.display = 'none';	
+								}								
+							}
+							callback();
+						}, 1000);
+				};
 				var animate = function(){
 					if(totalDelay < nextDelay && currIndex == destIndex) {
 						// TODO disable other node display and destination node click
+						disableOtherNodes(function() {
+							selectDestinationNode();
+						});
 						return;
 					}
 					if(currIndex != -1) {
@@ -193,6 +212,18 @@
 					}, nextDelay);
 				};
 				animate();
+
+
+				
+			}
+			// function disableOtherNodes() {
+			// 	var nodes = document.getElementById("nodes").getElementsByClassName('node');
+			// 	for (var i in nodes) {
+			// 		nodes[i].style.display = 'none';
+			// 	}
+			// }
+			function selectDestinationNode() {
+
 			}
 			function oneClickSelect(e) {
 				getAllChildrend(config);
