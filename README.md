@@ -7,6 +7,9 @@
 4. 기능추가
 - random 
 - animation
+- share to friends
+5. 서버
+- nodejs socket.io???(websocket)
 ```
 
 ## 비기능명세
