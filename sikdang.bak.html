@@ -1,0 +1,336 @@
+<html>
+<head>
+<script type="text/javascript">
+			var config = { 
+				'한식' : {
+					'불고기' : [
+						'원조쌈밥집', 
+						'싸리방',
+						'남원추어탕',
+						'고기향기',
+						'육감',
+						'갈비까페'
+					],
+					'찜닭' : [
+						'고수찜닭',
+						'내찜닭'
+					],
+					'해장국' : [
+						'무봉리순대국',
+						'이화수육개장',
+						'한성옥',
+						'유프로',
+						'천지연',
+						'현대옥',
+						'한촌설렁탕',
+						'양평해장국',
+						'수누리감자탕'
+					],
+					'백반' : [
+						'엄마의 밥상',
+						'시골밥상',
+						'화끈한놈들',
+						'성찬백반'
+					],
+					'기타' : [
+						'무지개돌솥밥',
+						'김명자낙지',
+						'착한낙지',
+						'시골보쌈&감자옹심이'
+					]
+				},
+				'분식' : [
+					'김밥나라',
+					'배꼽빵빵',
+					'빨강파이프'
+				],
+				'중식' : [
+					'교동짬뽕',
+					'쓰부',
+					'홍콩반점',
+					'밍추',
+					'차이란',
+					'락앤웍',
+					'홍춘짬뽕'
+				],
+				'기타' : {
+					'만두' : [
+						'북촌손만두',
+						'수담',
+						'해마루'
+					],
+					'칼국수' : [
+						'고향손칼국수',
+						'황도바지락 칼국수',
+						'참바지락 칼제비',
+						'엉뚱상상'
+					],
+					'콩요리' : [
+						'산속골',
+						'기와집',
+						'북창동순두부'
+					]
+				},
+				'베트남' : [
+					'포메인',
+					'채선당',
+					'오리엔탈스푼',
+					'샤브향'
+				],
+				'배달' : {
+					'햄버거' : [
+						'롯데리아',
+						'맘스터치',
+						'맥도날드',
+					],
+					'도시락' : [
+						'본도시락',
+						'야미가',
+					],
+					'피자' : [
+						'피자알볼로',
+						'도미노피자',
+						'미스터피자'
+					],
+					'분식' : [
+						'얌샘',
+						'부들부들'
+					]
+				},
+				'일식' : {
+					'라멘' : [
+						'우메다'
+					],
+					'우동' : [
+						'미소야',
+						'신정면',
+						'명품 즉석 우동밀면'
+					],
+					'알탕' : [
+						'김영희 동태찜&알탕',
+						'대양참치'
+					],
+					'회덮밥' : [
+						'해피덮',
+						'대양참치'
+					]
+				}
+			};
+			var currentNode = "";
+			var nodeTemplate = null;
+			var randomValue = [];
+			var children = [];
+			var previousNodes = []; //이전 노드
+			function draw(childs) {
+				var nodesHTML = '';
+				for(var node in childs) {
+					console.log('node: ' + node);
+					var templateStr = nodeTemplate.innerHTML;
+					templateStr = templateStr.replace('{{node}}', childs[node]);
+					nodesHTML += templateStr;
+				}
+				document.getElementById('nodes').innerHTML = nodesHTML;
+			}
+			function select(e) {
+				var nodeSpan = e.getElementsByTagName('span')[0];
+				currentNode = nodeSpan.innerHTML;	
+
+				var childs = searchChild(config);
+				if (childs != -1) {
+					draw(childs);
+					previousNodes.push(childs);
+				}
+			}
+			function randomSelect(e) {
+				var item = document.getElementById('nodes').getElementsByClassName('node');
+				var randomIndex = Math.floor(Math.random() * item.length);
+				selectRandom(randomIndex);
+			}
+			function searchChild(parent) {
+				console.log('parent: ' + parent);
+				if(Array.isArray(parent) || Object.keys(parent).length == 0) {
+					return -1;
+				}
+				for(var key in parent) {
+					if(currentNode == key) {
+						var ret = parent[key];
+						if(Array.isArray(ret)) {
+							return ret;
+						} else {
+							return Object.keys(ret);
+						}
+					} else {
+						var ret = searchChild(parent[key]);
+						if(ret != -1) {
+							return ret;
+						}
+					}
+				}
+				return -1;
+			}
+			function selectRandom(destIndex) {
+				var nodes = document.getElementById("nodes").getElementsByTagName('div');
+				var totalDelay = 3600;
+				var nextDelay = 50;
+				var currIndex = -1;
+				var animate = function(){
+					if(totalDelay < nextDelay && currIndex == destIndex) {
+						// TODO disable other node display and destination node click
+						return;
+					}
+					if(currIndex != -1) {
+						nodes[currIndex].className = 'node';
+					}
+					currIndex = currIndex + 1;
+					if(currIndex == nodes.length) {
+						currIndex = 0;
+					}
+					nodes[currIndex].className = 'selectNode';
+					nextDelay = nextDelay * 1.1;
+					totalDelay = totalDelay - nextDelay;
+					setTimeout(function() {
+						animate();
+					}, nextDelay);
+				};
+				animate();
+			}
+			function oneClickSelect(e) {
+				getAllChildrend(config);
+				alert(children[Math.floor(Math.random()*children.length)]);
+			}
+			function getAllChildrend(parent) {
+				if(Array.isArray(parent) || Object.keys(parent).length == 0) {
+					children = children.concat(parent);
+					return -1;
+				}
+				for(var key in parent) {
+					var ret = getAllChildrend(parent[key]);
+					if(ret != -1) {
+						return ret;
+					}
+				}
+				return -1;
+			}
+			function init() {
+				nodeTemplate = document.getElementById('nodeTemplate');
+				draw(Object.keys(config));
+				
+				var root = [];
+				for (var n in config) {
+					root.push(n);
+				}
+				previousNodes.push(root);
+			}
+
+			document.onkeydown = function(e){
+				if (e.keyCode == 8) { // backspace
+					var currentNodeIndex = previousNodes.length -1;
+					if (currentNodeIndex > 0) {
+						previousNodes.pop();
+						draw(previousNodes[previousNodes.length -1]);	
+					}	
+				}
+			};
+		</script>
+<style>
+			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
+			.node span { width:200px; height:200px; border:1px solid red; display:table-cell; vertical-align: middle; font-size:30pt }
+			.selectNode { background-color: blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
+			.selectNode span { width:200px; height:200px; display:table-cell; vertical-align: middle; font-size:30pt; color:white; font-weight: bold; }
+			#nodes {float:left; clear:both;}
+			#selectBtnArea .btn {
+			  display:inline-block;
+			  width:200px;
+			  height:60px;
+			  margin:10px;
+			  vertical-align:middle;
+			  text-align:center;
+			  background: #3498db;
+			  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+			  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+			  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+			  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+			  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+			  -webkit-border-radius: 28;
+			  -moz-border-radius: 28;
+			  border-radius: 28px;
+			  font-family: Arial;
+			  color: #ffffff;
+			  font-size: 20px;
+			  text-decoration: none;
+			}
+			#selectBtnArea .btn p {
+				text-align:center;
+			}
+			#selectBtnArea .btn:hover {
+			  background: #3cb0fd;
+			  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+			  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+			  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+			  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+			  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+			  text-decoration: none;
+			}
+			      #jb-container {
+        width: 940px;
+        margin: 0px auto;
+        padding: 20px;
+      }
+      #jb-header {
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #bcbcbc;
+      }
+      #jb-content {
+        width: 580px;
+        padding: 20px;
+        margin-bottom: 20px;
+        float: left;
+        border: 1px solid #bcbcbc;
+      }
+      #jb-sidebar {
+        width: 260px;
+        padding: 20px;
+        margin-bottom: 20px;
+        float: right;
+        border: 1px solid #bcbcbc;
+      }
+</style>
+</head>
+<body onload="init()">
+<div id="jb-container">
+	<div id="jb-header">
+		<h1>Let's choice~</h1>
+	</div>
+	<div id="jb-content">
+		<h2>Content</h2>
+		<div id="nodeTemplate" style="display:none">
+			<div class="node" onclick="select(this)">
+				<span>{{node}}</span>
+			</div>
+		</div>
+		<div id="nodes">
+		</div>
+	</div>
+	<div id="jb-sidebar">
+		<h2>Sidebar</h2>
+		<div id="selectBtnArea">
+			<div id="randomSelect">
+				<div class="btn" onclick="randomSelect(this)">
+					<p>
+						random
+					</p>
+				</div>
+			</div>
+			<div id="oneClickSelect">
+				<div class="btn" onclick="oneClickSelect(this)">
+					<p>
+						oneClickSelect
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
