@@ -8,8 +8,10 @@
 - random 
 - animation
 - share to friends
+- link to naver for restaurant info(etc. telephone, map)
+- improve previous function
 5. 서버
-- nodejs socket.io???(websocket)
+- nodejs webSocket
 ```
 
 ## 비기능명세
