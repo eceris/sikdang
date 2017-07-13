@@ -10,8 +10,9 @@
 - share to friends
 - link to naver for restaurant info(etc. telephone, map)
 - improve previous function
+- imprve design
 5. 서버
-- nodejs webSocket
+- nodejs webSocket(chat)
 ```
 
 ## 비기능명세
