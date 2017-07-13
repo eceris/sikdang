@@ -160,6 +160,27 @@
 					movePrevious();
 				}
 			};
+
+		    var webSocket = new WebSocket("ws://127.0.0.1:8080");
+		 
+		    webSocket.onopen = function() {
+		        console.log("open");
+		        webSocket.send("thank you for accepting this Web Socket request");
+		    }
+		 
+		    webSocket.onmessage = function(e) {
+		        console.log(e.data);
+		        
+		    }
+		 
+		    webSocket.onclose = function(e) {
+		        console.log("closed");
+		    }
+
+			function send(message) {
+				webSocket.send(message);
+			}
+
 		</script>
 		<style>
 			.node { border:1px solid blue; float: left; margin: 10px; text-align: center; cursor: pointer; }
