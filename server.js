@@ -39,40 +39,47 @@ var EventHandler = {
     },
 
     invokeEvent : function(request) {
-    	var jsonRequest = JSON.parse(request.utf8Data);
+    	var jsonRequest = JSON.parse(request);
     	console.log('invokeEvent : ' + jsonRequest.eventName);
+    	
     	this.event[jsonRequest.eventName](request);
     },
 
-    menuSelect : function(node) {
-    	console.log('menuSelect : ' + node);
+    menuSelect : function(request) {
+    	console.log('menuSelect : ' + request);
+    	sendBroadcastMsg(request);
     },
-    menuRandomSelect : function(node) {
-		console.log('menuRandomSelect : ' + node);
+    menuRandomSelect : function(request) {
+		console.log('menuRandomSelect');
+		sendBroadcastMsg(request);
     },
-    menuOneClickSelect : function(node) {
-    	console.log('menuOneClickSelect : ' + node);
+    menuOneClickSelect : function(request) {
+    	console.log('menuOneClickSelect : ' + request);
+    	sendBroadcastMsg(request);
     },
 
-    pageInit : function() {
+    pageInit : function(request) {
     	console.log('pageInit');
+    	sendBroadcastMsg(request);
     },
-    pageMovePrevious : function() {
+    pageMovePrevious : function(request) {
+    	sendBroadcastMsg(request);
     	console.log('pageMovePrevious');
     },
 
     chatSendMessage : function(request) {
-    	var jsonRequest = JSON.parse(request.utf8Data);
+    	var jsonRequest = JSON.parse(request);
         msg = idlist[request.key]+ ': ' + jsonRequest.param;
 
     	var jsonResponse = {
             'eventName' : '/chat/sendMessage',
 			'param' : msg
     	}
-
-		sendBroadcastMsg(JSON.stringfy(jsonResponse));;
     	console.log('chatSendMessage -> ' + msg);
-    }
+		sendBroadcastMsg(JSON.stringify(jsonResponse));
+    },
+
+
 
 };
 
@@ -88,6 +95,8 @@ function sendBroadcastMsg(message) {
         cli.sendUTF(message);
     });
 } 
+
+
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
       request.reject();
@@ -99,17 +108,17 @@ wsServer.on('request', function(request) {
 
     var connection = request.accept(null, request.origin);
     clients.push(connection);
-    idlist[request.key] = id++;  // 임의로 id값을 할당함. request.key값으로 client 구분
+    idlist[request.key] = id;  // 임의로 id값을 할당함. request.key값으로 client 구분
     console.log((new Date()) + ' Connection accepted.');
 
-    var welcomeMsg = id + ' was joined.'
-    sendBroadcastMsg('/chat/sendMessage', '[Notice] '+ welcomeMsg);
+    var welcomeMsg = '[Notice] ' + id++ + ' was joined.';
+    sendBroadcastMsg(JSON.stringify({'eventName':'/chat/sendMessage', 'param':welcomeMsg}));
 
     connection.on('message', function(request) {
         if (request.type === 'utf8') {
             console.log('Received Message: ' + request.utf8Data);
                      // 브로드캐스팅!!
-            EventHandler.invokeEvent(request);
+            EventHandler.invokeEvent(request.utf8Data);
         }
         else if (request.type === 'binary') {
             console.log('Received Binary Message of ' + request.binaryData.length + ' bytes');
