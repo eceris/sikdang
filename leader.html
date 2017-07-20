@@ -140,7 +140,7 @@
         }
         function init() {
 
-            var identifier  = document.cookie.substring(document.cookie.indexOf('identifier=') + 1);
+            var identifier  = document.cookie.substring(document.cookie.indexOf('LEADERID=') + 1);
             document.getElementById('identifier').textContent = 'http://localhost:8080/guest?id=' + identifier;
 
             nodeTemplate = document.getElementById('nodeTemplate');
@@ -166,6 +166,15 @@
             }
         };
 
+        var getGuestIdFromCookie = function() {
+            var cookies = document.cookie.split(';');
+            for(var i in cookies) {
+                var cookie = cookies[i].trim();
+                if (cookie.startsWith('GUESTID=')) {
+                    return cookie.replace('GUESTID=', '');
+                }
+            }
+        }
 
         var url = "ws://localhost:8080";
         w = new WebSocket(url);

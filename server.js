@@ -25,10 +25,10 @@ var server = http.createServer(function(request, response) {
 
     if (parsed.pathname.indexOf('leader') > 0) {
         var identifier = new Date().getTime();
-        response.setHeader('Set-Cookie', ['identifier=' + identifier]);
+        response.setHeader('Set-Cookie', ['LEADERID=' + identifier]);
         htmlForLeader(response);
     } else if (parsed.pathname.indexOf('guest') > 0) {
-        response.setHeader('Set-Cookie', ['identifier=' + parsed.query.id]);
+        response.setHeader('Set-Cookie', ['GUESTID=' + parsed.query.id]);
         htmlForGuest(response);
     } else {
         response.writeHead(404);
@@ -89,8 +89,13 @@ wsServer.on('request', function(request) {
         if (message.type === 'utf8') {
             console.log('Received Message: ' + message.utf8Data);
             debugger;
+            var msg = JSON.parse(message.utf8Data);
             // send message to client
-            // connection.sendUTF('to client : ' + message.utf8Data);
+            connection.sendUTF(JSON.stringify({
+                id: msg.id,
+                event : null,
+                message : 'Hi client, I have got a message from you : ' + msg.message
+            }));
         } else if (message.type === 'binary') {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
             connection.sendBytes(message.binaryData);
