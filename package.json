@@ -1,0 +1,19 @@
+{
+  "name": "sikdang",
+  "version": "1.0.0",
+  "description": "```\r 1. 화면(디자인)\r 2. 자료구조\r 3. script \r 4. 기능추가\r - random \r - animation\r - share to friends\r - link to naver for restaurant info(etc. telephone, map)\r - improve previous function\r 5. 서버\r - nodejs webSocket\r ```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eceris/sikdang.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eceris/sikdang/issues"
+  },
+  "homepage": "https://github.com/eceris/sikdang#readme"
+}
