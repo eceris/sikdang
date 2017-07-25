@@ -86,15 +86,15 @@ wsServer.on('request', function (request) {
         if (message.type === 'utf8') {
             console.log('Received Message: ' + message.utf8Data);
             debugger;
-            var msg = JSON.parse(message.utf8Data);
-
-
-            // send message to client
-            connection.sendUTF(JSON.stringify({
-                id: msg.id,
-                event: null,
-                message: 'Hi client, I have got a message from you : ' + msg.message
-            }));
+            // var msg = JSON.parse(message.utf8Data);
+            //
+            //
+            // // send message to client
+            // connection.sendUTF(JSON.stringify({
+            //     id: msg.id,
+            //     event: null,
+            //     message: 'Hi client, I have got a message from you : ' + msg.message
+            // }));
         }
     });
     connection.on('close', function (reasonCode, description) {
